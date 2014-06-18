@@ -3,10 +3,12 @@
 # Checking whether python architecture and version are valid, otherwise an obfuscated error
 # will be thrown when trying to load cefpython.pyd with a message "DLL load failed".
 import platform
+
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
 
-import os, sys
+import os
+import sys
 libcef_dll = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           'libcef.dll')
 if os.path.exists(libcef_dll):
@@ -24,9 +26,12 @@ else:
 import cefwindow
 import win32con
 import win32gui
+from now_playing import NowPlaying
 import time
+from threading import Thread
+import pythoncom
 
-DEBUG = True
+DEBUG = False
 DEFAULT_WIDTH = 800
 DEFAULT_HEIGHT = 600
 
@@ -114,10 +119,25 @@ def CefAdvanced():
     windowInfo.SetAsChild(windowHandle)
     browser = cefpython.CreateBrowserSync(windowInfo, browserSettings,
                                           navigateUrl=GetApplicationPath("index.html"))
+
+    if not NowPlaying._running:
+        NowPlaying._running = True
+        # TODO: don't make this hardcoded, this should be driven from user selection
+        NowPlaying._player = "Spotify"
+        try:
+            pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+        except pythoncom.com_error:
+            #already initialized.
+            pass
+        now_playing_thread = Thread(target=NowPlaying.enum_windows)
+        now_playing_thread.daemon = True
+        now_playing_thread.start()
+
     cefpython.MessageLoop()
     cefpython.Shutdown()
 
 def CloseWindow(windowHandle, message, wparam, lparam):
+    # NOW_PLAYING_THREAD.stop()
     browser = cefpython.GetBrowserByWindowHandle(windowHandle)
     browser.CloseBrowser()
     return win32gui.DefWindowProc(windowHandle, message, wparam, lparam)
