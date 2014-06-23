@@ -153,4 +153,5 @@ if __name__ == "__main__":
     # create the StormBot dir if it doesn't exist
     if not os.path.exists(SB_CACHE_PATH):
         os.makedirs(SB_CACHE_PATH)
+    NowPlaying.STORM_BOT_HOME = STORM_BOT_HOME
     CefAdvanced()

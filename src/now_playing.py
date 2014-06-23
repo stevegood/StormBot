@@ -8,6 +8,17 @@ class NowPlaying:
     _current_song = ""
     _player = None
     _running = False
+    STORM_BOT_HOME = None
+
+    @staticmethod
+    def write(text):
+        if NowPlaying.STORM_BOT_HOME:
+            directory = NowPlaying.STORM_BOT_HOME
+            try:
+                with open(directory + '\\current_song.txt', 'w') as f:
+                    f.write(text.encode('utf-8'))
+            except Exception, e:
+                print e.message
 
     @staticmethod
     def enum_windows():
@@ -24,5 +35,7 @@ class NowPlaying:
             windowTitle = win32gui.GetWindowText(hwnd).decode('cp1252')
             spotify = 'Spotify'.decode('utf-8')
             if spotify in windowTitle and not len(windowTitle) < 10:
-                NowPlaying._current_song = windowTitle.replace('Spotify - '.decode('utf-8'), '')
-                print NowPlaying._current_song
+                current_song = windowTitle.replace('Spotify - '.decode('utf-8'), '')
+                if not current_song == NowPlaying._current_song:
+                    NowPlaying._current_song = windowTitle.replace('Spotify - '.decode('utf-8'), '')
+                    NowPlaying.write(NowPlaying._current_song)
