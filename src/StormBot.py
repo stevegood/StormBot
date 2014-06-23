@@ -8,6 +8,7 @@ if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
 
 import os
+from os.path import expanduser
 import sys
 libcef_dll = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           'libcef.dll')
@@ -34,6 +35,8 @@ import pythoncom
 DEBUG = False
 DEFAULT_WIDTH = 800
 DEFAULT_HEIGHT = 600
+STORM_BOT_HOME = expanduser("~/StormBot")
+SB_CACHE_PATH = STORM_BOT_HOME + "/data"
 
 def GetApplicationPath(file=None):
     import re, os
@@ -87,7 +90,6 @@ def ExceptHook(excType, excValue, traceObject):
 
 def CefAdvanced():
     sys.excepthook = ExceptHook
-
     appSettings = dict()
     if DEBUG:
         # cefpython debug messages in console and in log_file
@@ -95,6 +97,8 @@ def CefAdvanced():
         cefwindow.g_debug = True
     appSettings["log_file"] = GetApplicationPath("debug.log")
     appSettings["log_severity"] = cefpython.LOGSEVERITY_INFO
+    appSettings["persist_session_cookies"] = True
+    appSettings["cache_path"] = SB_CACHE_PATH
     appSettings["release_dcheck_enabled"] = True # Enable only when debugging
     appSettings["browser_subprocess_path"] = "%s/%s" % (
         cefpython.GetModuleDirectory(), "subprocess")
@@ -117,8 +121,7 @@ def CefAdvanced():
                                           icon="icon.ico", windowProc=wndproc)
     windowInfo = cefpython.WindowInfo()
     windowInfo.SetAsChild(windowHandle)
-    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings,
-                                          navigateUrl=GetApplicationPath("index.html"))
+    browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=GetApplicationPath("index.html"))
 
     if not NowPlaying._running:
         NowPlaying._running = True
@@ -147,4 +150,7 @@ def QuitApplication(windowHandle, message, wparam, lparam):
     return 0
 
 if __name__ == "__main__":
+    # create the StormBot dir if it doesn't exist
+    if not os.path.exists(SB_CACHE_PATH):
+        os.makedirs(SB_CACHE_PATH)
     CefAdvanced()
