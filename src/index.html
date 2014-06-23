@@ -45,13 +45,13 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a id="account" href="#">
+                            <a id="account-settings-nav" href="#">
                                 <i class="glyphicon glyphicon-user"></i>
                                 Account
                             </a>
                         </li>
                         <li>
-                            <a id="music-player" href="#">
+                            <a id="music-player-settings-nav" href="#">
                                 <i class="glyphicon glyphicon-music"></i>
                                 Music Player
                             </a>
@@ -73,8 +73,82 @@
     </div>
 </div>
 
+<!-- Handlebars Templates -->
+<script id="music-player-settings-template" type="text/x-handlebars-template">
+<div id="music-player-settings" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" href="#" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Music Player Settings</h3>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Select a compatible music player from the dropdown below.
+                    You can also choose to have the current song written out to a file.
+                </p>
+                <hr/>
+
+                <div class="form-group">
+                    <label class="control-label" for="player-select">Player</label>
+                    <select id="player-select" class="form-control">
+                        <option value="amazon music" {{returnIfEqual player 'amazon music' 'selected'}}>Amazon Music</option>
+                        <option value="spotify" {{returnIfEqual player 'spotify' 'selected'}}>Spotify</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input id="save-to-file-cb" type="checkbox" {{returnIfEqual now_playing.save_to_file true 'checked'}} />
+                            Write current song to file
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="music-player-save-btn" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script id="account-settings-template" type="text/x-handlebars-template">
+    <div id="account-settings" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" href="#" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">Account Settings</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Edit your account details here.  These settings are never shared outside StormBot.</p>
+
+                    <fieldset>
+                        <legend>Twitch</legend>
+
+                        <div class="form-group">
+                            <label class="control-label" for="username-field">Username</label>
+                            <input id="username-field" class="form-control" type="text" value="{{twitch.username}}"/>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="account-settings-save-btn" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/handlebars-v1.3.0.js"></script>
 <script src="js/application.js"></script>
 
 </body>
