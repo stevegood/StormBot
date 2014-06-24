@@ -2,3 +2,5 @@
 *.iml
 src/*.log
 *.log
+src/build
+src/dist

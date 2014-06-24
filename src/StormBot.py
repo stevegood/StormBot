@@ -3,6 +3,7 @@
 # Checking whether python architecture and version are valid, otherwise an obfuscated error
 # will be thrown when trying to load cefpython.pyd with a message "DLL load failed".
 import platform
+from warnings import catch_warnings
 
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
@@ -10,25 +11,14 @@ if platform.architecture()[0] != "32bit":
 import os
 from os.path import expanduser
 import sys
-libcef_dll = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          'libcef.dll')
-if os.path.exists(libcef_dll):
-    # Import the local module.
-    if 0x02070000 <= sys.hexversion < 0x03000000:
-        import cefpython_py27 as cefpython
-    elif 0x03000000 <= sys.hexversion < 0x04000000:
-        import cefpython_py32 as cefpython
-    else:
-        raise Exception("Unsupported python version: %s" % sys.version)
-else:
-    # Import the package.
-    from cefpython3 import cefpython
+from cefpython3 import cefpython_py27 as cefpython
 
 import cefwindow
 import win32con
 import win32gui
 from now_playing import NowPlaying
 import time
+import json
 from threading import Thread
 import pythoncom
 
