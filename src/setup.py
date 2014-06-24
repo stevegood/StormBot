@@ -40,5 +40,9 @@ def get_data_files():
 
 setup(
     data_files=get_data_files(),
-    windows=['StormBot.py']
+    windows=[{
+        "script": "StormBot.py",
+        "icon_resources": [(1, "icon.ico")],
+        "dest_base": "StormBot"
+    }]
 )
