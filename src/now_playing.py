@@ -16,7 +16,7 @@ class NowPlaying:
             directory = NowPlaying.STORM_BOT_HOME
             try:
                 with open(directory + '\\current_song.txt', 'w') as f:
-                    f.write(text.encode('utf-8'))
+                    f.write((text + "    ").encode('utf-8'))
             except Exception, e:
                 print e.message
 
