@@ -29,7 +29,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a id="dashboard" href="#">
+                            <a id="dashboard-nav" href="#">
                                 <i class="glyphicon glyphicon-dashboard"></i>
                                 Dashboard
                             </a>
@@ -67,7 +67,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div id="chat">
-                <iframe src="http://www.twitch.tv/chat/embed?channel=ThatArdothGuy&popout_chat=true" frameborder="0"></iframe>
+                <h3>Loading Chat...</h3>
             </div>
         </div>
     </div>
@@ -92,7 +92,6 @@
                 <div class="form-group">
                     <label class="control-label" for="player-select">Player</label>
                     <select id="player-select" class="form-control">
-                        <option value="amazon music" {{returnIfEqual player 'amazon music' 'selected'}}>Amazon Music</option>
                         <option value="spotify" {{returnIfEqual player 'spotify' 'selected'}}>Spotify</option>
                     </select>
                 </div>
@@ -146,9 +145,64 @@
     </div>
 </script>
 
+<script id="stream-dashboard-template" type="text/x-handlebars-template">
+    <div id="stream-dashboard" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" href="#" data-dismiss="modal">&times;</a>
+                    <h3 class="modal-title">Title this broadcast</h3>
+                </div>
+
+                <div class="modal-body">
+
+                    <form accept-charset="UTF-8" action="/{{twitch.username}}/dashboard" class="form"
+                          data-remote="true" id="vod_form" method="post" original-title="">
+                        <input name="utf8" type="hidden" value="✓">
+                        <input name="_method" type="hidden" value="put">
+
+                        <div class="form-group">
+                            <label class="control-label" for="vod_status"></label>
+                            <textarea class="form-control" cols="40" id="vod_status" maxlength="140"
+                                      name="vod[status]">{{twitch.stream.status}}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <select class="form-control" name="toggle_play_select"
+                                            id="toggle_play_select">
+                                        <option value="Playing" {{returnIfNotEqual twitch.stream.game '' 'selected'}}>Playing</option>
+                                        <option value="Not Playing" {{returnIfEqual twitch.stream.game '' 'selected'}}>Not Playing</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <input class="form-control" type="text" id="gameselector_input" value="{{twitch.stream.game}}"/>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-lg-2">
+                                    <button class="btn btn-primary" tabindex="4" type="submit">
+                                        <span>Update</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="chat-iframe-template" type="text/x-handlebars-template">
+    <iframe src="http://www.twitch.tv/chat/embed?channel={{username}}&popout_chat=true" frameborder="0"></iframe>
+</script>
+
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/handlebars-v1.3.0.js"></script>
+<script src="js/twitch-sdk.js"></script>
 <script src="js/application.js"></script>
 
 </body>

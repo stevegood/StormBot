@@ -4,6 +4,7 @@
 # will be thrown when trying to load cefpython.pyd with a message "DLL load failed".
 import platform
 from warnings import catch_warnings
+from JSBindings import JSBindings
 
 if platform.architecture()[0] != "32bit":
     raise Exception("Architecture not supported: %s" % platform.architecture()[0])
@@ -19,8 +20,6 @@ import win32gui
 from now_playing import NowPlaying
 import time
 import json
-from threading import Thread
-import pythoncom
 
 DEBUG = False
 DEFAULT_WIDTH = 800
@@ -113,18 +112,10 @@ def CefAdvanced():
     windowInfo.SetAsChild(windowHandle)
     browser = cefpython.CreateBrowserSync(windowInfo, browserSettings, navigateUrl=GetApplicationPath("index.html"))
 
-    if not NowPlaying._running:
-        NowPlaying._running = True
-        # TODO: don't make this hardcoded, this should be driven from user selection
-        NowPlaying._player = "Spotify"
-        try:
-            pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-        except pythoncom.com_error:
-            #already initialized.
-            pass
-        now_playing_thread = Thread(target=NowPlaying.enum_windows)
-        now_playing_thread.daemon = True
-        now_playing_thread.start()
+
+    bindings = cefpython.JavascriptBindings(bindToFrames=True, bindToPopups=True)
+    JSBindings(bindings)
+    browser.SetJavascriptBindings(bindings)
 
     cefpython.MessageLoop()
     cefpython.Shutdown()

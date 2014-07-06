@@ -6,3 +6,10 @@
     height: 400px;
     width: 100%;
 }
+
+#gameselector_input {
+    text-indent: 22px;
+    background-image: url("http://www.twitch.tv/images/xarth/gameselector_icon.png");
+    background-repeat: no-repeat;
+    background-position: 4px center;
+}
